@@ -1,0 +1,36 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations:
+    client.knative.dev/user-image: us-central1-docker.pkg.dev/abclamav/cloud-run-source-deploy/clamav-python
+    run.googleapis.com/ingress: all
+    run.googleapis.com/ingress-status: all
+  labels:
+    cloud.googleapis.com/location: us-central1
+  name: clamav-python
+  namespace: '237791660036'
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '100'
+        client.knative.dev/user-image: us-central1-docker.pkg.dev/abclamav/cloud-run-source-deploy/clamav-python
+        run.googleapis.com/client-name: gcloud
+        run.googleapis.com/client-version: 391.0.0
+      name: clamav-python-v1
+    spec:
+      containerConcurrency: 80
+      containers:
+      - image: us-central1-docker.pkg.dev/abclamav/cloud-run-source-deploy/clamav-python@sha256:2737b5292249400e3ddfe999a092bf3b97811a6205c97c8943c2b88145eb2c4a
+        ports:
+        - containerPort: 8080
+          name: http1
+        resources:
+          limits:
+            cpu: "8"
+            memory: 24Gi
+      serviceAccountName: 237791660036-compute@developer.gserviceaccount.com
+      timeoutSeconds: 300
+  traffic:
+  - latestRevision: true
+    percent: 100
